@@ -1,0 +1,101 @@
+" vim: tw=0 ts=2 sw=2
+
+" Disable the compatibility to classic Vi
+set nocompatible
+
+" Allow intelligent auto indenting for each filetype,
+" and for plugins that are filetype specific.
+filetype indent plugin on
+
+" Enable syntax highlighting
+syntax on
+
+" Color scheme
+colorscheme nel
+
+" Raise an error if you try to quit Vim while there are hidden buffers
+set hidden
+
+" Command menu autocomplete
+set wildmenu
+
+" Show partial commands in the last line of the screen
+set showcmd
+
+" Case insensitive save and exit commands
+cab W w | cab Q q | cab WQ wq | cab Wq wq | cab wQ wq | cab X x
+
+" Enable incremental searching
+set incsearch
+
+" Highlight search matches
+set hlsearch
+
+" Press Space to remove the highlighting for the current search
+nnoremap <silent> <Space> :silent nohlsearch<Bar>echo<CR>
+
+" If a pattern contains an uppercase letter, the search is
+" case sensitive, otherwise, it is case insensitive
+set ignorecase smartcase
+
+" Highlight matching braces
+set showmatch
+
+" Visually select the text when jumping to matching object
+noremap % v%
+
+" Allow backspace to delete indent, end of line, and start of line characters
+set backspace=indent,eol,start
+
+" Enable auto indenting
+set autoindent
+
+" Convert tabs to spaces
+set expandtab
+
+" Tab size in spaces (for manual indenting)
+set tabstop=4
+
+" The number of spaces inserted for a tab (for auto indenting)
+set shiftwidth=4
+
+" Raise a dialogue asking if you want to save changed files, instead
+" of failing a command because of unsaved changes
+set confirm
+
+" Display line numbers
+set number
+
+" Try to get rid of the delay when pressing some keycodes
+set timeout timeoutlen=1000 ttimeout ttimeoutlen=200
+
+" Press \s to strip trailing whitespace
+nnoremap <Leader>s :%s/\s\+$//e <Bar>echo<CR>
+
+" Press \l to toggle highlighting on current line
+nnoremap <Leader>l :set cursorline! <Bar>echo<CR>
+
+" Press \c to toggle highlighting on current column
+nnoremap <Leader>c :set cursorcolumn! <Bar>echo<CR>
+
+" UTF-8 encoding
+set encoding=utf-8
+
+" Disable beeping and window flashing
+set noerrorbells visualbell t_vb=
+
+" Status line {{{
+" Always display the status line
+set laststatus=2
+
+" Status line content
+set statusline=%F               " full file name
+set statusline+=%m              " modified flag
+set statusline+=%r              " read only flag
+set statusline+=%h              " help file flag
+set statusline+=%=\ \|\ %{&ft}  " file type
+set statusline+=\ \|\ %{&fenc}  " file encoding
+set statusline+=\ \|\ ts=%{&ts} " tabstop
+set statusline+=\ sw=%{&sw}     " shiftwidth
+set statusline+=\ \|\ %l,%c\    " cursor position (line,column)
+" }}}
