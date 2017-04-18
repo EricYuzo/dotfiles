@@ -1,0 +1,14 @@
+[alias]
+	st = status
+	amend = commit --amend --reuse-message=HEAD
+[color]
+	ui = auto
+[core]
+	editor = vim
+	excludesfile = ~/.gitignore_global
+[merge]
+	tool = vimdiff
+	conflictstyle = diff3
+[user]
+	name = Eric Yuzo
+	email = eyuzo@devsv.com.br
