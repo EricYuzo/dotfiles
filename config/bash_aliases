@@ -1,0 +1,18 @@
+alias cd..="cd .."
+alias cd-="cd -"
+alias cd~="cd ~"
+
+alias cls="clear"
+
+alias la="ls -A"
+alias ll="ls -lhA"
+
+# prettier echo $PATH
+alias path="echo $PATH | tr -s ':' '\n'"
+
+# tmux
+alias tmls="tmux ls"
+alias tmnew="tmux new -s"
+alias tmopen="tmux attach -t"
+alias tmkill="tmux kill-session -t"
+alias tmkillall="tmux ls | cut -d : -f 1 | xargs -I {} tmux kill-session -t {}"
