@@ -11,6 +11,12 @@ config_dotfiles() {
     done
 }
 
+# download file from $1 to $2 directory
+download() {
+    wget -qcP $2 $1 \
+        || error "$PROGRAM: failed to download $1"
+}
+
 error() {
     >&2 cat <<< "$@"
     exit 1
@@ -21,10 +27,13 @@ error() {
 BASEDIR=${0%/*}
 CONFIGDIR="$BASEDIR/config"
 DOT_FILES=(bash_aliases tmux.conf vimrc gitignore_global gitconfig)
+NEL_DIR=~/.vim/colors
+NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 PROGRAM=${0##*/}
 # }
 
 
 # main {{{
+download $NEL_URL $NEL_DIR
 config_dotfiles "${DOT_FILES[@]}"
 # }}}
