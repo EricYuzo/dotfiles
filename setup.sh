@@ -24,12 +24,12 @@ error() {
 
 
 # variables {
-BASEDIR=${0%/*}
+BASEDIR=$(dirname $0)
 CONFIGDIR="$BASEDIR/config"
 DOT_FILES=(bash_aliases tmux.conf vimrc gitignore_global gitconfig)
 NEL_DIR=~/.vim/colors
 NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
-PROGRAM=${0##*/}
+PROGRAM=$(basename $0)
 # }
 
 
