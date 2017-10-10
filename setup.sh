@@ -59,7 +59,6 @@ usage() {
 
 
 # variables {
-all=no
 dev=no
 
 BASEDIR=$(dirname $0)
@@ -67,7 +66,15 @@ CONFIGDIR="$BASEDIR/config"
 EXITCODE=0
 PROGRAM=$(basename $0)
 
-DOT_FILES=(bash_aliases tmux.conf vimrc gitignore_global gitconfig)
+DOTFILES=(\
+    bash_aliases\
+    tmux.conf\
+    vimrc\
+)
+DEV_DOTFILES=(\
+    gitconfig\
+    gitignore_global\
+)
 NEL_DIR=~/.vim/colors
 NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 # }
@@ -78,7 +85,7 @@ while [ $# -gt 0 ]
 do
     case $1 in
         --all | -a )
-            all=yes
+            dev=yes
             ;;
         --dev | -d )
             dev=yes
@@ -100,7 +107,8 @@ done
 
 # main {{{
 download $NEL_URL $NEL_DIR
-config_dotfiles "${DOT_FILES[@]}"
+config_dotfiles "${DOTFILES[@]}"
+[ "$dev" = "yes" ] && config_dotfiles "${DEV_DOTFILES[@]}"
 
 exit $EXITCODE
 # }}}
