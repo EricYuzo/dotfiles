@@ -32,11 +32,6 @@ download() {
     fi
 }
 
-error() {
-    >&2 cat <<< "$@"
-    exit 1
-}
-
 
 # variables {
 BASEDIR=$(dirname $0)
