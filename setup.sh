@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#! /usr/bin/env bash
 
 # copy files from config dir to user's home
 config_dotfiles() {
