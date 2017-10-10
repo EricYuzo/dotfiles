@@ -31,6 +31,9 @@ download() {
 
 
 # variables {
+all=no
+dev=no
+
 BASEDIR=$(dirname $0)
 CONFIGDIR="$BASEDIR/config"
 EXITCODE=0
@@ -41,6 +44,24 @@ NEL_DIR=~/.vim/colors
 NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 # }
 
+
+# option parsing {{
+while [ $# -gt 0 ]
+do
+    case $1 in
+        --all | -a )
+            all=yes
+            ;;
+        --dev )
+            dev=yes
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+# }}
 
 # main {{{
 download $NEL_URL $NEL_DIR
