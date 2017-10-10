@@ -2,11 +2,12 @@
 
 # copy files from config dir to user's home
 config_dotfiles() {
-    for f in "$@"
+    for f in $1/*
     do
+        f=$(basename $f)
         echo -n "Creating file ~/.$f ...   "
-        if ! cmp $CONFIGDIR/$f ~/.$f > /dev/null 2>&1 ; then
-            if cat $CONFIGDIR/$f > ~/.$f 2> /dev/null ; then
+        if ! cmp $1/$f ~/.$f > /dev/null 2>&1 ; then
+            if cat $1/$f > ~/.$f 2> /dev/null ; then
                 echo "Done"
             else
                 echo "Fail"
@@ -62,19 +63,11 @@ usage() {
 dev=no
 
 BASEDIR=$(dirname $0)
-CONFIGDIR="$BASEDIR/config"
 EXITCODE=0
 PROGRAM=$(basename $0)
 
-DOTFILES=(\
-    bash_aliases\
-    tmux.conf\
-    vimrc\
-)
-DEV_DOTFILES=(\
-    gitconfig\
-    gitignore_global\
-)
+DEFAULT_DIR="$BASEDIR/config/default"
+DEV_DIR="$BASEDIR/config/dev"
 NEL_DIR=~/.vim/colors
 NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 # }
@@ -107,8 +100,8 @@ done
 
 # main {{{
 download $NEL_URL $NEL_DIR
-config_dotfiles "${DOTFILES[@]}"
-[ "$dev" = "yes" ] && config_dotfiles "${DEV_DOTFILES[@]}"
+config_dotfiles "$DEFAULT_DIR"
+[ "$dev" = "yes" ] && config_dotfiles "$DEV_DIR"
 
 exit $EXITCODE
 # }}}
