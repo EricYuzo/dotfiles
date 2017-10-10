@@ -61,6 +61,9 @@ do
         --dev )
             dev=yes
             ;;
+        -*)
+            error "Unrecognized option: $1"
+            ;;
         *)
             break
             ;;
