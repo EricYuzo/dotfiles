@@ -32,7 +32,13 @@ download() {
 # print error message and exit
 error() {
     echo "$@" 1>&2
+    usage
     exit 1
+}
+
+# print usage message
+usage() {
+    echo "Usage: $PROGRAM [--all] [--dev]"
 }
 
 
