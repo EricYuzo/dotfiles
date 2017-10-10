@@ -29,6 +29,12 @@ download() {
     fi
 }
 
+# print error message and exit
+error() {
+    echo "$@" 1>&2
+    exit 1
+}
+
 
 # variables {
 all=no
