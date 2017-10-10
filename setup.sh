@@ -64,7 +64,7 @@ do
         --all | -a )
             all=yes
             ;;
-        --dev )
+        --dev | -d )
             dev=yes
             ;;
         -*)
