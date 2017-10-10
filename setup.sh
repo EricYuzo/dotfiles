@@ -54,7 +54,7 @@ showhelp() {
 
 # print usage message
 usage() {
-    echo "Usage: $PROGRAM [--all] [--dev]"
+    echo "Usage: $PROGRAM [--all] [--dev] [--help]"
 }
 
 
@@ -82,6 +82,10 @@ do
             ;;
         --dev | -d )
             dev=yes
+            ;;
+        --help | -h )
+            showhelp
+            exit 0
             ;;
         -*)
             error "Unrecognized option: $1"
