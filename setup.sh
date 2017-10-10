@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-# copy files from config dir to user's home
+# copy files from $1 dir to current user's home
 config_dotfiles() {
     for f in $1/*
     do
@@ -44,13 +44,13 @@ showhelp() {
     echo "Create configuration files for some programs according to chosen environments."
     echo
     echo "Available options:"
-    echo "  -a, --all     include all available configuration files"
+    echo "  -a, --all     include all available files"
     echo "  -d, --dev     include files for development environment"
     echo "  -h, --help    display this help and exit"
     echo
-    echo "Available configuration files (by environment):"
-    echo "  default    (~/.bash_aliases, ~/.vimrc, ~/.tmux.conf)"
-    echo "  dev        (~/.gitconfig, ~/.gitignore_global)"
+    echo "Supported environments:"
+    echo "  default (always created)"
+    echo "  dev (development)"
 }
 
 # print usage message
