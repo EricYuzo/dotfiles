@@ -36,6 +36,22 @@ error() {
     exit 1
 }
 
+# print help message
+showhelp() {
+    echo "Usage: $PROGRAM [OPTION]..."
+    echo
+    echo "Create configuration files for some programs according to chosen environments."
+    echo
+    echo "Available options:"
+    echo "  -a, --all     include all available configuration files"
+    echo "  -d, --dev     include files for development environment"
+    echo "  -h, --help    display this help and exit"
+    echo
+    echo "Available configuration files (by environment):"
+    echo "  default    (~/.bash_aliases, ~/.vimrc, ~/.tmux.conf)"
+    echo "  dev        (~/.gitconfig, ~/.gitignore_global)"
+}
+
 # print usage message
 usage() {
     echo "Usage: $PROGRAM [--all] [--dev]"
