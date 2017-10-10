@@ -13,8 +13,15 @@ config_dotfiles() {
 
 # download file from $1 to $2 directory
 download() {
-    wget -qcP $2 $1 \
-        || error "$PROGRAM: failed to download $1"
+    echo -n "Downloading $(basename $1) ...   "
+    if wget -qcP $2 $1
+    then
+        echo "Done"
+        return 0
+    else
+        echo "Fail"
+        return 1
+    fi
 }
 
 error() {
