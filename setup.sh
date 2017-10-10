@@ -2,11 +2,19 @@
 
 # copy files from config dir to user's home
 config_dotfiles() {
-    for f in "$@" ; do
-        if ! cmp $CONFIGDIR/$f ~/.$f > /dev/null 2>&1 ; then
-            cp $CONFIGDIR/$f ~/.$f \
-                && chmod 644 ~/.$f \
-                || error "$PROGRAM: failed to configure ~/.$f"
+    for f in "$@"
+    do
+        echo -n "Creating file ~/.$f ...   "
+        if ! cmp $CONFIGDIR/$f ~/.$f > /dev/null 2>&1
+        then
+            if cat $CONFIGDIR/$f > ~/.$f 2> /dev/null
+            then
+                echo "Done"
+            else
+                echo "Fail"
+            fi
+        else
+            echo "Nothing to do"
         fi
     done
 }
