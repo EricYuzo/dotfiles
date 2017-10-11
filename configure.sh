@@ -62,12 +62,12 @@ usage() {
 # variables {
 dev=no
 
-BASEDIR=$(dirname $0)
 EXITCODE=0
 PROGRAM=$(basename $0)
 
-DEFAULT_DIR="$BASEDIR/config/default"
-DEV_DIR="$BASEDIR/config/dev"
+BASEDIR="$(dirname $0)/templates"
+DEFAULT_DIR="$BASEDIR/default"
+DEV_DIR="$BASEDIR/dev"
 NEL_DIR=~/.vim/colors
 NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 # }
