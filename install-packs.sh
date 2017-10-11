@@ -70,21 +70,7 @@ dev=no
 EXITCODE=0
 PROGRAM=$(basename $0)
 
-DEFAULT_PACKS=(\
-    curl\
-    htop\
-    iftop\
-    iotop\
-    xxdiff\
-    tmux\
-    vim\
-    unzip\
-    unrar\
-    p7zip-full\
-    poppler-utils\
-    pdftk\
-    aria2\
-)
+PACKS_DIR="$(dirname $0)/packs.list"
 # }
 
 
@@ -116,7 +102,7 @@ done
 # main {{{
 configure_aptlist
 apt_update
-apt_install "${DEFAULT_PACKS[@]}"
+apt_install $(cat $PACKS_DIR/default)
 
 exit $EXITCODE
 # }}}
