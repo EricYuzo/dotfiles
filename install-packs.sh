@@ -28,6 +28,32 @@ usage() {
 }
 
 
+apt_update() {
+    echo -n "Running 'apt-get update' ...   "
+    if apt-get update > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
+configure_aptlist() {
+    echo -n "Configuring /etc/apt/sources.list components ...   "
+    if egrep 'main$' /etc/apt/sources.list > /dev/null ; then
+        # include contrib and non-free components
+        if sed -i -e 's/ main$/ main contrib non-free/g' /etc/apt/sources.list 2> /dev/null ; then
+            echo "Done"
+        else
+            echo "Fail"
+            EXITCODE=$((EXITCODE + 1))
+        fi
+    else
+        echo "Nothing to do"
+    fi
+}
+
+
 # variables {
 dev=no
 
@@ -62,7 +88,8 @@ done
 # }}
 
 # main {{{
-# do some stuff here
+configure_aptlist
+apt_update
 
 exit $EXITCODE
 # }}}
