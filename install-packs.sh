@@ -17,11 +17,13 @@ showhelp() {
     echo "  -a, --all     install all listed tools"
     echo "  --gui         install graphical tools"
     echo "  --du          install disk utilities"
+    echo "  --dev         install essential development tools"
     echo "  -h, --help    display this help and exit"
     echo
     echo "Supported groups of tools:"
     echo "  gui    X11 interface"
     echo "  du     disk utilities"
+    echo "  dev    essential development tools"
 }
 
 # print usage message
@@ -71,6 +73,7 @@ configure_aptlist() {
 all=no
 gui=no
 hdu=no
+dev=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -91,6 +94,9 @@ do
             ;;
         --du )
             hdu=yes
+            ;;
+        --dev )
+            dev=yes
             ;;
         --help | -h )
             showhelp
@@ -113,6 +119,7 @@ apt_update
 apt_install $(cat $PACKS_DIR/default)
 [ "$all" = "yes" -o "$gui" = "yes" ] && apt_install $(cat $PACKS_DIR/gui)
 [ "$all" = "yes" -o "$hdu" = "yes" ] && apt_install $(cat $PACKS_DIR/du)
+[ "$all" = "yes" -o "$dev" = "yes" ] && apt_install $(cat $PACKS_DIR/dev)
 
 exit $EXITCODE
 # }}}
