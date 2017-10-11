@@ -28,6 +28,16 @@ usage() {
 }
 
 
+apt_install() {
+    echo -n "Running 'apt-get install -y $@' ...   "
+    if apt-get install -y "$@" > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
 apt_update() {
     echo -n "Running 'apt-get update' ...   "
     if apt-get update > /dev/null 2>&1 ; then
@@ -59,6 +69,22 @@ dev=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
+
+DEFAULT_PACKS=(\
+    curl\
+    htop\
+    iftop\
+    iotop\
+    xxdiff\
+    tmux\
+    vim\
+    unzip\
+    unrar\
+    p7zip-full\
+    poppler-utils\
+    pdftk\
+    aria2\
+)
 # }
 
 
@@ -90,6 +116,7 @@ done
 # main {{{
 configure_aptlist
 apt_update
+apt_install "${DEFAULT_PACKS[@]}"
 
 exit $EXITCODE
 # }}}
