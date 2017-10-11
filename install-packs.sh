@@ -16,10 +16,12 @@ showhelp() {
     echo "Available options:"
     echo "  -a, --all     install all listed tools"
     echo "  --gui         install graphical tools"
+    echo "  --du          install disk utilities"
     echo "  -h, --help    display this help and exit"
     echo
     echo "Supported groups of tools:"
-    echo "  gui (X11 interface)"
+    echo "  gui    X11 interface"
+    echo "  du     disk utilities"
 }
 
 # print usage message
@@ -66,7 +68,9 @@ configure_aptlist() {
 
 
 # variables {
+all=no
 gui=no
+hdu=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -80,10 +84,13 @@ while [ $# -gt 0 ]
 do
     case $1 in
         --all | -a )
-            gui=yes
+            all=yes
             ;;
         --gui )
             gui=yes
+            ;;
+        --du )
+            hdu=yes
             ;;
         --help | -h )
             showhelp
@@ -104,7 +111,8 @@ done
 configure_aptlist
 apt_update
 apt_install $(cat $PACKS_DIR/default)
-[ "$gui" = "yes" ] && apt_install $(cat $PACKS_DIR/gui)
+[ "$all" = "yes" -o "$gui" = "yes" ] && apt_install $(cat $PACKS_DIR/gui)
+[ "$all" = "yes" -o "$hdu" = "yes" ] && apt_install $(cat $PACKS_DIR/du)
 
 exit $EXITCODE
 # }}}
