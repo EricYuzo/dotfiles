@@ -15,16 +15,17 @@ showhelp() {
     echo
     echo "Available options:"
     echo "  -a, --all     install all listed tools"
-    echo "  -d, --dev     install development tools"
+    echo "  --gui         install graphical tools"
     echo "  -h, --help    display this help and exit"
     echo
     echo "Supported groups of tools:"
-    echo "  dev (development)"
+    echo "  gui (X11 interface)"
 }
 
 # print usage message
 usage() {
-    echo "Usage: $PROGRAM [--all] [--dev] [--help]"
+    echo "Usage: $PROGRAM [OPTION]..."
+    echo "Try '$PROGRAM --help' for more information."
 }
 
 
@@ -65,7 +66,7 @@ configure_aptlist() {
 
 
 # variables {
-dev=no
+gui=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -79,10 +80,10 @@ while [ $# -gt 0 ]
 do
     case $1 in
         --all | -a )
-            dev=yes
+            gui=yes
             ;;
-        --dev | -d )
-            dev=yes
+        --gui )
+            gui=yes
             ;;
         --help | -h )
             showhelp
@@ -103,6 +104,7 @@ done
 configure_aptlist
 apt_update
 apt_install $(cat $PACKS_DIR/default)
+[ "$gui" = "yes" ] && apt_install $(cat $PACKS_DIR/gui)
 
 exit $EXITCODE
 # }}}
