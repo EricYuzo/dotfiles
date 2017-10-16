@@ -9,27 +9,26 @@ error() {
 
 # print help message
 showhelp() {
-    echo "Usage: $PROGRAM [OPTION]..."
+    echo "Usage: $PROGRAM [OPTION] FILE..."
     echo
-    echo "Install a bunch of tools according to chosen groups."
+    echo "Install the apt packages listed in each FILE."
+    echo
+    echo "FILE is a text file containing the names of packages to be installed."
     echo
     echo "Available options:"
     echo "  -a, --all     install all listed tools"
-    echo "  --gui         install graphical tools"
-    echo "  --du          install disk utilities"
-    echo "  --dev         install essential development tools"
     echo "  -h, --help    display this help and exit"
-    echo
-    echo "Supported groups of tools:"
-    echo "  gui    X11 interface"
-    echo "  du     disk utilities"
-    echo "  dev    essential development tools"
 }
 
 # print usage message
 usage() {
-    echo "Usage: $PROGRAM [OPTION]..."
+    echo "Usage: $PROGRAM [OPTION]... FILE..."
     echo "Try '$PROGRAM --help' for more information."
+}
+
+# print warning message
+warning(){
+    echo "W: $@" 1>&2
 }
 
 
@@ -71,9 +70,7 @@ configure_aptlist() {
 
 # variables {
 all=no
-gui=no
-hdu=no
-dev=no
+groups=("default")
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -88,25 +85,14 @@ do
     case $1 in
         --all | -a )
             all=yes
-            ;;
-        --gui )
-            gui=yes
-            ;;
-        --du )
-            hdu=yes
-            ;;
-        --dev )
-            dev=yes
+            groups=( $(ls -1 $PACKS_DIR) )
             ;;
         --help | -h )
             showhelp
             exit 0
             ;;
-        -*)
-            error "Unrecognized option: $1"
-            ;;
         *)
-            break
+            [ "$all" = "no" ] && groups+=("$1")
             ;;
     esac
     shift
@@ -116,10 +102,14 @@ done
 # main {{{
 configure_aptlist
 apt_update
-apt_install $(cat $PACKS_DIR/default)
-[ "$all" = "yes" -o "$gui" = "yes" ] && apt_install $(cat $PACKS_DIR/gui)
-[ "$all" = "yes" -o "$hdu" = "yes" ] && apt_install $(cat $PACKS_DIR/du)
-[ "$all" = "yes" -o "$dev" = "yes" ] && apt_install $(cat $PACKS_DIR/dev)
+for g in ${groups[@]}
+do
+    if [ -f "$PACKS_DIR/$g" ] ; then
+        apt_install $(cat $PACKS_DIR/$g)
+    else
+        warning "File $PACKS_DIR/$g not found"
+    fi
+done
 
 exit $EXITCODE
 # }}}
