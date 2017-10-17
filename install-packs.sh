@@ -9,15 +9,19 @@ error() {
 
 # print help message
 showhelp() {
-    echo "Usage: $PROGRAM [OPTION] FILE..."
+    echo "Usage: $PROGRAM [OPTION]... FILE..."
     echo
     echo "Install the apt packages listed in each FILE."
     echo
     echo "FILE is a text file containing the names of packages to be installed."
+    echo "These files must be placed in a predefined search path."
+    echo "The search path is, by default, the directory 'packs.list'."
+    echo "You can use -p option to specify a new search path."
     echo
     echo "Available options:"
-    echo "  -a, --all     install all listed tools"
-    echo "  -h, --help    display this help and exit"
+    echo "  -a, --all          install the packages listed in all files"
+    echo "  -h, --help         display this help and exit"
+    echo "  -p, --path=PATH    PATH is the new search path"
 }
 
 # print usage message
@@ -71,11 +75,10 @@ configure_aptlist() {
 # variables {
 all=no
 groups=("default")
+searchpath="$(dirname $0)/packs.list"
 
 EXITCODE=0
 PROGRAM=$(basename $0)
-
-PACKS_DIR="$(dirname $0)/packs.list"
 # }
 
 
@@ -85,7 +88,13 @@ do
     case $1 in
         --all | -a )
             all=yes
-            groups=( $(ls -1 $PACKS_DIR) )
+            ;;
+        -p | --path )
+            searchpath=$2
+            shift
+            ;;
+        --path=* )
+            searchpath="${1#*=}"
             ;;
         --help | -h )
             showhelp
@@ -97,6 +106,12 @@ do
     esac
     shift
 done
+
+if ! [ -d "$searchpath" ] ; then
+    error "Cannot access search path: '$searchpath'"
+fi
+
+[ "$all" = "yes" ] && groups=( $(ls -1 $searchpath) )
 # }}
 
 # main {{{
@@ -104,10 +119,10 @@ configure_aptlist
 apt_update
 for g in ${groups[@]}
 do
-    if [ -f "$PACKS_DIR/$g" ] ; then
-        apt_install $(cat $PACKS_DIR/$g)
+    if [ -f "$searchpath/$g" ] ; then
+        apt_install $(cat $searchpath/$g)
     else
-        warning "File $PACKS_DIR/$g not found"
+        warning "File $searchpath/$g not found"
     fi
 done
 
