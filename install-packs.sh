@@ -2,7 +2,7 @@
 
 # print error message and exit
 error() {
-    echo "$@" 1>&2
+    echo "Error: $@" 1>&2
     usage
     exit 1
 }
@@ -32,7 +32,7 @@ usage() {
 
 # print warning message
 warning(){
-    echo "W: $@" 1>&2
+    echo "Warning: $@" 1>&2
 }
 
 
