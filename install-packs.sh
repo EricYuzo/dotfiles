@@ -86,7 +86,7 @@ PROGRAM=$(basename $0)
 while [ $# -gt 0 ]
 do
     case $1 in
-        --all | -a )
+        -a | --all )
             all=yes
             ;;
         -p | --path )
@@ -96,7 +96,7 @@ do
         --path=* )
             searchpath="${1#*=}"
             ;;
-        --help | -h )
+        -h | --help )
             showhelp
             exit 0
             ;;
