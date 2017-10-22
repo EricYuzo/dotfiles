@@ -17,16 +17,17 @@ showhelp() {
     echo "           it requires root permissions."
     echo
     echo "Available options:"
-    echo "  -a, --all           setup all available development environments"
-    echo "  -h, --help          display this help and exit"
-    echo "      --gis           install GIS tools"
-    echo "      --node          setup NodeJS environment"
+    echo "  -a, --all                   setup all available environments"
+    echo "  -h, --help                  display this help and exit"
+    echo "      --gis                   install GIS tools"
+    echo "      --node                  setup NodeJS environment"
     echo "      --nodejs"
-    echo "      --py            setup python environment"
+    echo "      --py                    setup python environment"
     echo "      --python"
-    echo "      --R             setup R environment"
-    echo "      --vbox          install VirtualBox"
+    echo "      --R                     setup R environment"
+    echo "      --vbox                  install VirtualBox"
     echo "      --virtualbox"
+    echo "      --vboxuser=USERNAME     if set, add USERNAME into group 'vboxusers'"
 }
 
 # print usage message
@@ -145,6 +146,18 @@ install_vbox() {
     apt_install virtualbox-5.1 dkms
 }
 
+add_vboxuser() {
+    if [ -n "$vboxuser" ] ; then
+        echo -n "Adding user '$vboxuser' to group 'vboxusers' ...   "
+        if adduser $vboxuser vboxusers > /dev/null 2>&1 ; then
+            echo "Done"
+        else
+            echo "Fail"
+            EXITCODE=$((EXITCODE + 1))
+        fi
+    fi
+}
+
 # variables {
 all=no
 python=no
@@ -181,6 +194,13 @@ do
         -vbox | --vbox | -virtualbox | --virtualbox )
             vbox=yes
             ;;
+        -vboxuser | --vboxuser )
+            vboxuser=$2
+            shift
+            ;;
+        -vboxuser=* | --vboxuser=* )
+            vboxuser="${1#*=}"
+            ;;
         -h | --help )
             showhelp
             exit 0
@@ -210,6 +230,9 @@ install_default
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 [ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
 [ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
+
+# additional configuration
+add_vboxuser
 
 exit $EXITCODE
 # }}}
