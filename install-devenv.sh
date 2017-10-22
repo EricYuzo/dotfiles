@@ -63,7 +63,7 @@ pip_install() {
 }
 
 install_default() {
-    apt_install build-essential git tor
+    apt_install build-essential gfortran libopenblas-base libopenblas-dev git tor
 }
 
 install_python() {
