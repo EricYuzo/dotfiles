@@ -2,7 +2,7 @@
 
 I created this repository to store config files for my Debian system.
 
-After a while, I wrote some setup scripts, just fun and bash coding.
+After a while, I wrote some setup scripts, just for fun and bash coding.
 
 ## Scripts
 
