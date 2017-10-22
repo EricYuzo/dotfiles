@@ -11,7 +11,13 @@ error() {
 showhelp() {
     echo "Usage: $PROGRAM [OPTION]..."
     echo
-    echo "Nothing here. Sorry pal. =("
+    echo "Install some basic development environments."
+    echo
+    echo "Available options:"
+    echo "  -a, --all       install all available development environments"
+    echo "  -h, --help      display this help and exit"
+    echo "      --py        install python environment"
+    echo "      --python"
 }
 
 # print usage message
