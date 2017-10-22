@@ -148,12 +148,16 @@ install_vbox() {
 
 add_vboxuser() {
     if [ -n "$vboxuser" ] ; then
-        echo -n "Adding user '$vboxuser' to group 'vboxusers' ...   "
-        if adduser $vboxuser vboxusers > /dev/null 2>&1 ; then
-            echo "Done"
+        if getent passwd $vboxuser > /dev/null 2>&1 ; then
+            echo -n "Adding user '$vboxuser' to group 'vboxusers' ...   "
+            if adduser $vboxuser vboxusers > /dev/null 2>&1 ; then
+                echo "Done"
+            else
+                echo "Fail"
+                EXITCODE=$((EXITCODE + 1))
+            fi
         else
-            echo "Fail"
-            EXITCODE=$((EXITCODE + 1))
+            warning "User '$vboxuser' was not found"
         fi
     fi
 }
