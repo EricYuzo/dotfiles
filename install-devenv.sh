@@ -11,13 +11,14 @@ error() {
 showhelp() {
     echo "Usage: $PROGRAM [OPTION]..."
     echo
-    echo "Install some basic development environments."
+    echo "Setup some basic development environments."
     echo
     echo "Available options:"
-    echo "  -a, --all       install all available development environments"
+    echo "  -a, --all       setup all available development environments"
     echo "  -h, --help      display this help and exit"
-    echo "      --py        install python environment"
+    echo "      --py        setup python environment"
     echo "      --python"
+    echo "      --R         setup R environment"
 }
 
 # print usage message
@@ -62,6 +63,7 @@ pip_install() {
     fi
 }
 
+
 install_default() {
     apt_install build-essential gfortran libopenblas-base libopenblas-dev git tor
 }
@@ -71,9 +73,14 @@ install_python() {
     pip_install ipython virtualenv
 }
 
+install_R() {
+    apt_install r-base r-base-dev
+}
+
 # variables {
 all=no
 python=no
+rstat=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -90,6 +97,9 @@ do
         -py | --py | -python | --python )
             python=yes
             ;;
+        -R | --R )
+            rstat=yes
+            ;;
         -h | --help )
             showhelp
             exit 0
@@ -105,6 +115,7 @@ done
 # main {{{
 install_default
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
+[ "$all" = "yes" -o "$rstat" = "yes" ]  && install_R
 
 exit $EXITCODE
 # }}}
