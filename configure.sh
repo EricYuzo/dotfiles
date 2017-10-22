@@ -1,24 +1,5 @@
 #! /usr/bin/env bash
 
-# copy files from $1 dir to current user's home
-config_dotfiles() {
-    for f in $1/*
-    do
-        f=$(basename $f)
-        echo -n "Creating file ~/.$f ...   "
-        if ! cmp $1/$f ~/.$f > /dev/null 2>&1 ; then
-            if cat $1/$f > ~/.$f 2> /dev/null ; then
-                echo "Done"
-            else
-                echo "Fail"
-                EXITCODE=$((EXITCODE + 1))
-            fi
-        else
-            echo "Nothing to do"
-        fi
-    done
-}
-
 # download file from $1 to $2 directory
 download() {
     echo -n "Downloading $(basename $1) ...   "
@@ -58,16 +39,39 @@ usage() {
     echo "Usage: $PROGRAM [--all] [--dev] [--help]"
 }
 
+# print warning message
+warning() {
+    echo "Warning: $@" 1>&2
+}
+
+# copy files from $1 dir to current user's home
+config_dotfiles() {
+    for f in $1/*
+    do
+        f=$(basename $f)
+        echo -n "Creating file ~/.$f ...   "
+        if ! cmp $1/$f ~/.$f > /dev/null 2>&1 ; then
+            if cat $1/$f > ~/.$f 2> /dev/null ; then
+                echo "Done"
+            else
+                echo "Fail"
+                EXITCODE=$((EXITCODE + 1))
+            fi
+        else
+            echo "Nothing to do"
+        fi
+    done
+}
+
 
 # variables {
-dev=no
+all=no
+groups=("default")
+searchpath="$(dirname $0)/dotfiles"
 
 EXITCODE=0
 PROGRAM=$(basename $0)
 
-BASEDIR="$(dirname $0)/templates"
-DEFAULT_DIR="$BASEDIR/default"
-DEV_DIR="$BASEDIR/dev"
 NEL_DIR=~/.vim/colors
 NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 # }
@@ -77,28 +81,44 @@ NEL_URL=https://raw.githubusercontent.com/EricYuzo/nel/master/colors/nel.vim
 while [ $# -gt 0 ]
 do
     case $1 in
-        --all | -a )
-            dev=yes
+        -a | --all )
+            all=yes
             ;;
-        --dev | -d )
-            dev=yes
+        -p | --path )
+            searchpath=$2
+            shift
             ;;
-        --help | -h )
+        --path=* )
+            searchpath="${1#*=}"
+            ;;
+        -h | --help )
             showhelp
             exit 0
             ;;
         *)
-            # unknown
+            [ "$all" = "no" ] && groups+=("$1")
             ;;
     esac
     shift
 done
+
+if ! [ -d "$searchpath" ] ; then
+    error "Cannot access search path: '$searchpath'"
+fi
+
+[ "$all" = "yes" ] && groups=( $(ls -1 $searchpath) )
 # }}
 
 # main {{{
 download $NEL_URL $NEL_DIR
-config_dotfiles "$DEFAULT_DIR"
-[ "$dev" = "yes" ] && config_dotfiles "$DEV_DIR"
+for g in ${groups[@]}
+do
+    if [ -d "$searchpath/$g" ] ; then
+        config_dotfiles "$searchpath/$g"
+    else
+        warning "Directory $searchpath/$g not found"
+    fi
+done
 
 exit $EXITCODE
 # }}}
