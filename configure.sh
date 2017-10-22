@@ -13,30 +13,32 @@ download() {
 
 # print error message and exit
 error() {
-    echo "$@" 1>&2
+    echo "Error: $@" 1>&2
     usage
     exit 1
 }
 
 # print help message
 showhelp() {
-    echo "Usage: $PROGRAM [OPTION]..."
+    echo "Usage: $PROGRAM [OPTION]... DIR..."
     echo
-    echo "Create configuration files for some programs according to chosen environments."
+    echo "Copy configuration files from each DIR to current user's home directory."
+    echo
+    echo "DIR is a directory containing 'dot files' (without the initial dot)."
+    echo "These directories must be placed in a predefined search path."
+    echo "The search path is, by default, the directory 'dotfiles'."
+    echo "You can use -p option to specify a new search path."
     echo
     echo "Available options:"
-    echo "  -a, --all     include all available files"
-    echo "  -d, --dev     include files for development environment"
-    echo "  -h, --help    display this help and exit"
-    echo
-    echo "Supported environments:"
-    echo "  default (always created)"
-    echo "  dev (development)"
+    echo "  -a, --all          include all available dot files"
+    echo "  -h, --help         display this help and exit"
+    echo "  -p, --path=PATH    PATH is the new search path"
 }
 
 # print usage message
 usage() {
-    echo "Usage: $PROGRAM [--all] [--dev] [--help]"
+    echo "Usage: $PROGRAM [OPTION]... FILE..."
+    echo "Try '$PROGRAM --help' for more information."
 }
 
 # print warning message
