@@ -81,7 +81,7 @@ do
         -a | --all )
             all=yes
             ;;
-        --python )
+        -py | --py | -python | --python )
             python=yes
             ;;
         -h | --help )
