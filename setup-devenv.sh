@@ -13,6 +13,9 @@ showhelp() {
     echo
     echo "Setup some basic development environments."
     echo
+    echo "IMPORTANT: As this script globally install packages,"
+    echo "           it requires root permissions."
+    echo
     echo "Available options:"
     echo "  -a, --all           setup all available development environments"
     echo "  -h, --help          display this help and exit"
@@ -35,6 +38,14 @@ usage() {
 # print warning message
 warning(){
     echo "Warning: $@" 1>&2
+}
+
+
+# only root can run this script
+check_root() {
+    if [ $(whoami) != 'root' ] ; then
+        error "This script requires root permissions!"
+    fi
 }
 
 
@@ -180,13 +191,19 @@ do
     esac
     shift
 done
+
+check_root
 # }}
 
 # main {{{
+# configure 3rd-party repositories
 [ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
 [ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
+
+# update apt list
 apt_update
 
+# install packages
 install_default
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
 [ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
