@@ -11,7 +11,7 @@ error() {
 showhelp() {
     echo "Usage: $PROGRAM [OPTION]... DIR..."
     echo
-    echo "Copy configuration files from each DIR to current user's home directory."
+    echo "Copy 'dot files' from each DIR to current user's home directory."
     echo
     echo "DIR is a directory containing 'dot files' (without the initial dot)."
     echo "These directories must be placed in a predefined search path."
@@ -19,7 +19,7 @@ showhelp() {
     echo "You can use -p option to specify a new search path."
     echo
     echo "Available options:"
-    echo "  -a, --all          include all available dot files"
+    echo "  -a, --all          copy all available dot files"
     echo "  -h, --help         display this help and exit"
     echo "  -p, --path=PATH    PATH is the new search path"
 }
