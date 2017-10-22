@@ -16,6 +16,8 @@ showhelp() {
     echo "Available options:"
     echo "  -a, --all       setup all available development environments"
     echo "  -h, --help      display this help and exit"
+    echo "      --node      setup NodeJS environment"
+    echo "      --nodejs"
     echo "      --py        setup python environment"
     echo "      --python"
     echo "      --R         setup R environment"
@@ -77,10 +79,28 @@ install_R() {
     apt_install r-base r-base-dev
 }
 
+config_nodejs_repo() {
+    # Instructions:
+    # https://nodejs.org/en/download/package-manager/
+
+    echo -n "Configuring NodeJS repository ...   "
+    if \curl -sL https://deb.nodesource.com/setup_8.x | bash - > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
+install_nodejs() {
+    apt_install nodejs
+}
+
 # variables {
 all=no
 python=no
 rstat=no
+nodejs=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -100,6 +120,9 @@ do
         -R | --R )
             rstat=yes
             ;;
+        -node | --node | -nodejs | --nodejs )
+            nodejs=yes
+            ;;
         -h | --help )
             showhelp
             exit 0
@@ -113,9 +136,13 @@ done
 # }}
 
 # main {{{
+[ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_repo
+apt_update
+
 install_default
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
-[ "$all" = "yes" -o "$rstat" = "yes" ]  && install_R
+[ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
+[ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 
 exit $EXITCODE
 # }}}
