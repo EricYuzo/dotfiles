@@ -87,11 +87,8 @@ do
             showhelp
             exit 0
             ;;
-        -*)
-            error "Unrecognized option: $1"
-            ;;
         *)
-            break
+            # unknown
             ;;
     esac
     shift
