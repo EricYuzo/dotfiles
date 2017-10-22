@@ -46,11 +46,29 @@ apt_update() {
     fi
 }
 
-prepare() {
-    apt_install build-essential git
+pip_install() {
+    echo -n "Running 'pip3 install -U $@' ...   "
+    if pip3 install -U "$@" > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
+install_default() {
+    apt_install build-essential git tor
+}
+
+install_python() {
+    apt_install python3 python3-dev python3-pip
+    pip_install ipython virtualenv
 }
 
 # variables {
+all=no
+python=no
+
 EXITCODE=0
 PROGRAM=$(basename $0)
 # }
@@ -60,6 +78,12 @@ PROGRAM=$(basename $0)
 while [ $# -gt 0 ]
 do
     case $1 in
+        -a | --all )
+            all=yes
+            ;;
+        --python )
+            python=yes
+            ;;
         -h | --help )
             showhelp
             exit 0
@@ -73,7 +97,8 @@ done
 # }}
 
 # main {{{
-prepare
+install_default
+[ "$all" = "yes" -o "$python" = "yes" ] && install_python
 
 exit $EXITCODE
 # }}}
