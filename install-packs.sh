@@ -13,6 +13,9 @@ showhelp() {
     echo
     echo "Install the apt packages listed in each FILE."
     echo
+    echo "IMPORTANT: As this script globally install packages,"
+    echo "           it requires root permissions."
+    echo
     echo "FILE is a text file containing the names of packages to be installed."
     echo "These files must be placed in a predefined search path."
     echo "The search path is, by default, the directory 'packs.list'."
@@ -33,6 +36,14 @@ usage() {
 # print warning message
 warning(){
     echo "Warning: $@" 1>&2
+}
+
+
+# only root can run this script
+check_root() {
+    if [ $(whoami) != 'root' ] ; then
+        error "This script requires root permissions!"
+    fi
 }
 
 
@@ -106,6 +117,8 @@ do
     esac
     shift
 done
+
+check_root
 
 if ! [ -d "$searchpath" ] ; then
     error "Cannot access search path: '$searchpath'"
