@@ -14,14 +14,16 @@ showhelp() {
     echo "Setup some basic development environments."
     echo
     echo "Available options:"
-    echo "  -a, --all       setup all available development environments"
-    echo "  -h, --help      display this help and exit"
-    echo "      --gis       install GIS tools"
-    echo "      --node      setup NodeJS environment"
+    echo "  -a, --all           setup all available development environments"
+    echo "  -h, --help          display this help and exit"
+    echo "      --gis           install GIS tools"
+    echo "      --node          setup NodeJS environment"
     echo "      --nodejs"
-    echo "      --py        setup python environment"
+    echo "      --py            setup python environment"
     echo "      --python"
-    echo "      --R         setup R environment"
+    echo "      --R             setup R environment"
+    echo "      --vbox          install VirtualBox"
+    echo "      --virtualbox"
 }
 
 # print usage message
@@ -90,7 +92,7 @@ install_R() {
     apt_install r-base r-base-dev
 }
 
-config_nodejs_repo() {
+config_nodejs_list() {
     # Instructions:
     # https://nodejs.org/en/download/package-manager/
 
@@ -112,12 +114,33 @@ install_gis() {
     npm_install topojson mapshaper
 }
 
+config_vbox_list() {
+    # Instructions:
+    # https://www.virtualbox.org/wiki/Linux_Downloads
+    # https://wiki.debian.org/VirtualBox
+
+    echo -n "Configuring VirtualBox repository ...   "
+    if echo "deb http://download.virtualbox.org/virtualbox/debian stretch contrib" | tee /etc/apt/sources.list.d/vbox.list > /dev/null 2>&1 \
+            && wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add - > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
+install_vbox() {
+    #apt_install virtualbox-4.3 dkms
+    apt_install virtualbox-5.1 dkms
+}
+
 # variables {
 all=no
 python=no
 rstat=no
 nodejs=no
 gis=no
+vbox=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -144,6 +167,9 @@ do
             gis=yes
             nodejs=yes # require npm
             ;;
+        -vbox | --vbox | -virtualbox | --virtualbox )
+            vbox=yes
+            ;;
         -h | --help )
             showhelp
             exit 0
@@ -157,7 +183,8 @@ done
 # }}
 
 # main {{{
-[ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_repo
+[ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
+[ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
 apt_update
 
 install_default
@@ -165,6 +192,7 @@ install_default
 [ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 [ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
+[ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
 
 exit $EXITCODE
 # }}}
