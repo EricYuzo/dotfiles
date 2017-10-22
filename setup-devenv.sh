@@ -16,6 +16,7 @@ showhelp() {
     echo "Available options:"
     echo "  -a, --all       setup all available development environments"
     echo "  -h, --help      display this help and exit"
+    echo "      --gis       install GIS tools"
     echo "      --node      setup NodeJS environment"
     echo "      --nodejs"
     echo "      --py        setup python environment"
@@ -48,6 +49,16 @@ apt_install() {
 apt_update() {
     echo -n "Running 'apt-get update' ...   "
     if apt-get update > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
+npm_install() {
+    echo -n "Running 'npm install -g $@' ...   "
+    if npm install -g "$@" > /dev/null 2>&1 ; then
         echo "Done"
     else
         echo "Fail"
@@ -96,11 +107,17 @@ install_nodejs() {
     apt_install nodejs
 }
 
+install_gis() {
+    apt_install gdal-bin libgdal-dev
+    npm_install topojson mapshaper
+}
+
 # variables {
 all=no
 python=no
 rstat=no
 nodejs=no
+gis=no
 
 EXITCODE=0
 PROGRAM=$(basename $0)
@@ -123,6 +140,10 @@ do
         -node | --node | -nodejs | --nodejs )
             nodejs=yes
             ;;
+        -gis | --gis )
+            gis=yes
+            nodejs=yes # require npm
+            ;;
         -h | --help )
             showhelp
             exit 0
@@ -143,6 +164,7 @@ install_default
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
 [ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
+[ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
 
 exit $EXITCODE
 # }}}
