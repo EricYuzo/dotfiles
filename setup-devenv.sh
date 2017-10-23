@@ -101,6 +101,21 @@ install_python() {
     pip_install ipython virtualenv
 }
 
+config_R_list() {
+    # Instructions:
+    # https://cran.r-project.org/bin/linux/debian/
+
+    echo -n "Configuring R repository ...   "
+    if echo "deb     http://vps.fmvz.usp.br/CRAN/bin/linux/debian stretch-cran34/" | tee /etc/apt/sources.list.d/cran.list > /dev/null 2>&1 \
+            && echo "deb-src http://vps.fmvz.usp.br/CRAN/bin/linux/debian stretch-cran34/" | tee -a /etc/apt/sources.list.d/cran.list > /dev/null 2>&1 \
+            && apt-key adv --keyserver keys.gnupg.net --recv-key E19F5F87128899B192B1A2C2AD5F960A256A04AF > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
 install_R() {
     apt_install r-base r-base-dev
 }
@@ -242,6 +257,7 @@ check_root
 prepare
 
 # configure 3rd-party repositories
+[ "$all" = "yes" -o  "$rstat" = "yes" ]  && config_R_list
 [ "$all" = "yes" -o   "$java" = "yes" ]  && config_java_list
 [ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
 [ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
