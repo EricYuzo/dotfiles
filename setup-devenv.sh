@@ -20,6 +20,7 @@ showhelp() {
     echo "  -a, --all               setup all available environments"
     echo "  -h, --help              display this help and exit"
     echo "      --gis               install GIS tools"
+    echo "      --java              install Java environment"
     echo "      --node              setup NodeJS environment"
     echo "      --nodejs"
     echo "      --py                setup python environment"
@@ -91,8 +92,8 @@ pip_install() {
 }
 
 
-install_default() {
-    apt_install build-essential gfortran libopenblas-base libopenblas-dev git tor
+prepare() {
+    apt_install build-essential gfortran libopenblas-base libopenblas-dev git tor dirmngr
 }
 
 install_python() {
@@ -102,6 +103,26 @@ install_python() {
 
 install_R() {
     apt_install r-base r-base-dev
+}
+
+config_java_list() {
+    # Instructions:
+    # http://www.webupd8.org/2015/02/install-oracle-java-9-in-ubuntu-linux.html
+
+    echo -n "Configuring Java repository ...   "
+    if echo "deb     http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/java.list > /dev/null 2>&1 \
+            && echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/java.list > /dev/null 2>&1 \
+            && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
+install_java() {
+    echo oracle-java9-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+    apt_install oracle-java9-installer
 }
 
 config_nodejs_list() {
@@ -160,6 +181,7 @@ add_vboxuser() {
 all=no
 python=no
 rstat=no
+java=no
 nodejs=no
 gis=no
 vbox=no
@@ -181,6 +203,9 @@ do
             ;;
         -R | --R )
             rstat=yes
+            ;;
+        -java | --java )
+            java=yes
             ;;
         -node | --node | -nodejs | --nodejs )
             nodejs=yes
@@ -214,7 +239,10 @@ check_root
 # }}
 
 # main {{{
+prepare
+
 # configure 3rd-party repositories
+[ "$all" = "yes" -o   "$java" = "yes" ]  && config_java_list
 [ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
 [ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
 
@@ -222,9 +250,9 @@ check_root
 apt_update
 
 # install packages
-install_default
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
 [ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
+[ "$all" = "yes" -o   "$java" = "yes" ] && install_java
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 [ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
 [ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
