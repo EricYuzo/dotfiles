@@ -1,6 +1,6 @@
 " vim: tw=0 ts=2 sw=2
 " Vim color file
-" Maintainer:  Eric Yuzo <yuzo.devsv@gmail.com>
+" Maintainer:  Eric Yuzo <eyuzo@devsv.com.br>
 " Last Change: 2016 May 11
 
 
