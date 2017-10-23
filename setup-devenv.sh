@@ -17,17 +17,17 @@ showhelp() {
     echo "           it requires root permissions."
     echo
     echo "Available options:"
-    echo "  -a, --all                   setup all available environments"
-    echo "  -h, --help                  display this help and exit"
-    echo "      --gis                   install GIS tools"
-    echo "      --node                  setup NodeJS environment"
+    echo "  -a, --all               setup all available environments"
+    echo "  -h, --help              display this help and exit"
+    echo "      --gis               install GIS tools"
+    echo "      --node              setup NodeJS environment"
     echo "      --nodejs"
-    echo "      --py                    setup python environment"
+    echo "      --py                setup python environment"
     echo "      --python"
-    echo "      --R                     setup R environment"
-    echo "      --vbox                  install VirtualBox"
+    echo "      --R                 setup R environment"
+    echo "      --vbox              install VirtualBox"
     echo "      --virtualbox"
-    echo "      --vboxuser=USERNAME     if set, add USERNAME into group 'vboxusers'"
+    echo "      --user=USERNAME     if set, add USERNAME into group 'vboxusers'"
 }
 
 # print usage message
@@ -147,18 +147,12 @@ install_vbox() {
 }
 
 add_vboxuser() {
-    if [ -n "$vboxuser" ] ; then
-        if getent passwd $vboxuser > /dev/null 2>&1 ; then
-            echo -n "Adding user '$vboxuser' to group 'vboxusers' ...   "
-            if adduser $vboxuser vboxusers > /dev/null 2>&1 ; then
-                echo "Done"
-            else
-                echo "Fail"
-                EXITCODE=$((EXITCODE + 1))
-            fi
-        else
-            warning "User '$vboxuser' was not found"
-        fi
+    echo -n "Adding user '$user' to group 'vboxusers' ...   "
+    if adduser $user vboxusers > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
     fi
 }
 
@@ -198,12 +192,12 @@ do
         -vbox | --vbox | -virtualbox | --virtualbox )
             vbox=yes
             ;;
-        -vboxuser | --vboxuser )
-            vboxuser=$2
+        -user | --user )
+            user=$2
             shift
             ;;
-        -vboxuser=* | --vboxuser=* )
-            vboxuser="${1#*=}"
+        -user=* | --user=* )
+            user="${1#*=}"
             ;;
         -h | --help )
             showhelp
@@ -236,7 +230,13 @@ install_default
 [ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
 
 # additional configuration
-add_vboxuser
+if [ -n "$user" ] ; then
+    if getent passwd $user > /dev/null 2>&1 ; then
+        add_vboxuser
+    else
+        warning "User '$user' was not found"
+    fi
+fi
 
 exit $EXITCODE
 # }}}
