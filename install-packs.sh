@@ -13,13 +13,13 @@ showhelp() {
     echo
     echo "Install the apt packages listed in each FILE."
     echo
-    echo "IMPORTANT: As this script globally install packages,"
-    echo "           it requires root permissions."
-    echo
     echo "FILE is a text file containing the names of packages to be installed."
     echo "These files must be placed in a predefined search path."
     echo "The search path is, by default, the directory 'packs.list'."
     echo "You can use -p option to specify a new search path."
+    echo
+    echo "IMPORTANT: As this script globally install packages,"
+    echo "           it requires root permissions."
     echo
     echo "Available options:"
     echo "  -a, --all          install the packages listed in all files"
