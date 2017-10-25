@@ -13,3 +13,5 @@ pdftk
 aria2
 jq
 imagemagick
+pacpl
+normalize-audio
