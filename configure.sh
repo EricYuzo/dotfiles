@@ -40,17 +40,41 @@ warning() {
 copy_dotfiles() {
     for f in $1/*
     do
-        f=$(basename $f)
-        echo -n "Creating file ~/.$f ...   "
-        if ! cmp $1/$f ~/.$f > /dev/null 2>&1 ; then
-            if cp -r $1/$f ~/.$f 2> /dev/null ; then
-                echo "Done"
+        if [[ ! -f $f.pat ]] && [[ $f != *.pat ]] ; then
+            f=$(basename $f)
+            echo -n "Creating file ~/.$f ...   "
+            if ! cmp $1/$f ~/.$f > /dev/null 2>&1 ; then
+                if cp -r $1/$f ~/.$f 2> /dev/null ; then
+                    echo "Done"
+                else
+                    echo "Fail"
+                    EXITCODE=$((EXITCODE + 1))
+                fi
             else
-                echo "Fail"
-                EXITCODE=$((EXITCODE + 1))
+                echo "Nothing to do"
             fi
-        else
-            echo "Nothing to do"
+        fi
+    done
+}
+
+# append content to existing dot files, if necessary
+append_to_dotfiles() {
+    for f in $1/*.pat
+    do
+        f=${f%.pat}
+        if [[ -f ${f} ]] ; then
+            f=$(basename $f)
+            echo -n "Updating file ~/.$f ...   "
+            if ! grep -Pzo "$(cat $1/$f.pat)" ~/.$f > /dev/null 2>&1 ; then
+                if cat $1/$f >> ~/.$f ; then
+                    echo "Done"
+                else
+                    echo "Fail"
+                    EXITCODE=$((EXITCODE + 1))
+                fi
+            else
+                echo "Nothing to do"
+            fi
         fi
     done
 }
@@ -103,6 +127,7 @@ for g in ${groups[@]}
 do
     if [ -d "$searchpath/$g" ] ; then
         copy_dotfiles "$searchpath/$g"
+        append_to_dotfiles "$searchpath/$g"
     else
         warning "Directory $searchpath/$g not found"
     fi
