@@ -15,3 +15,4 @@ jq
 imagemagick
 pacpl
 normalize-audio
+libarchive-zip-perl
