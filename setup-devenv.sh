@@ -20,7 +20,8 @@ showhelp() {
     echo "  -a, --all               setup all available environments"
     echo "  -h, --help              display this help and exit"
     echo "      --gis               install GIS tools"
-    echo "      --java              install Java environment"
+    echo "      --java              setup Java LTS environment"
+    echo "      --java9             setup Java 9 environment"
     echo "      --node              setup NodeJS environment"
     echo "      --nodejs"
     echo "      --py                setup python environment"
@@ -120,11 +121,15 @@ install_R() {
     apt_install r-base r-base-dev
 }
 
-config_java_list() {
+install_java() {
+    openjdk-8-jre openjdk-8-jdk openjdk-8-doc openjdk-8-source
+}
+
+config_java9_list() {
     # Instructions:
     # http://www.webupd8.org/2015/02/install-oracle-java-9-in-ubuntu-linux.html
 
-    echo -n "Configuring Java repository ...   "
+    echo -n "Configuring Java 9 repository ...   "
     if echo "deb     http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/java.list > /dev/null 2>&1 \
             && echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/java.list > /dev/null 2>&1 \
             && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 > /dev/null 2>&1 ; then
@@ -135,7 +140,7 @@ config_java_list() {
     fi
 }
 
-install_java() {
+install_java9() {
     echo oracle-java9-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
     apt_install oracle-java9-installer
 }
@@ -178,8 +183,8 @@ config_vbox_list() {
 }
 
 install_vbox() {
-    #apt_install virtualbox-4.3 dkms
-    apt_install virtualbox-5.1 dkms
+    apt_install virtualbox-4.3 dkms
+    #apt_install virtualbox-5.1 dkms
 }
 
 add_vboxuser() {
@@ -197,6 +202,7 @@ all=no
 python=no
 rstat=no
 java=no
+java9=no
 nodejs=no
 gis=no
 vbox=no
@@ -221,6 +227,9 @@ do
             ;;
         -java | --java )
             java=yes
+            ;;
+        -java9 | --java9 )
+            java9=yes
             ;;
         -node | --node | -nodejs | --nodejs )
             nodejs=yes
@@ -258,7 +267,7 @@ prepare
 
 # configure 3rd-party repositories
 [ "$all" = "yes" -o  "$rstat" = "yes" ]  && config_R_list
-[ "$all" = "yes" -o   "$java" = "yes" ]  && config_java_list
+[ "$all" = "yes" -o  "$java9" = "yes" ]  && config_java9_list
 [ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
 [ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
 
@@ -269,6 +278,7 @@ apt_update
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
 [ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
 [ "$all" = "yes" -o   "$java" = "yes" ] && install_java
+[ "$all" = "yes" -o  "$java9" = "yes" ] && install_java9
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 [ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
 [ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
