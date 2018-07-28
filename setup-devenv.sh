@@ -183,8 +183,7 @@ config_vbox_list() {
 }
 
 install_vbox() {
-    apt_install virtualbox-4.3 dkms
-    #apt_install virtualbox-5.1 dkms
+    apt_install virtualbox-5.2 dkms
 }
 
 add_vboxuser() {
