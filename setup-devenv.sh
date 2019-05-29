@@ -160,6 +160,7 @@ config_nodejs_list() {
 
 install_nodejs() {
     apt_install nodejs
+    npm_install nodemon
 }
 
 install_gis() {
