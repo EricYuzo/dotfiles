@@ -20,8 +20,7 @@ showhelp() {
     echo "  -a, --all               setup all available environments"
     echo "  -h, --help              display this help and exit"
     echo "      --gis               install GIS tools"
-    echo "      --java              setup Java LTS environment"
-    echo "      --java9             setup Java 9 environment"
+    echo "      --java              setup Java environment"
     echo "      --node              setup NodeJS environment"
     echo "      --nodejs"
     echo "      --py                setup python environment"
@@ -107,8 +106,8 @@ config_R_list() {
     # https://cran.r-project.org/bin/linux/debian/
 
     echo -n "Configuring R repository ...   "
-    if echo "deb     http://vps.fmvz.usp.br/CRAN/bin/linux/debian stretch-cran34/" | tee /etc/apt/sources.list.d/cran.list > /dev/null 2>&1 \
-            && echo "deb-src http://vps.fmvz.usp.br/CRAN/bin/linux/debian stretch-cran34/" | tee -a /etc/apt/sources.list.d/cran.list > /dev/null 2>&1 \
+    if echo "deb     http://vps.fmvz.usp.br/CRAN/bin/linux/debian buster-cran35/" | tee /etc/apt/sources.list.d/cran.list > /dev/null 2>&1 \
+            && echo "deb-src http://vps.fmvz.usp.br/CRAN/bin/linux/debian buster-cran35/" | tee -a /etc/apt/sources.list.d/cran.list > /dev/null 2>&1 \
             && apt-key adv --keyserver keys.gnupg.net --recv-key E19F5F87128899B192B1A2C2AD5F960A256A04AF > /dev/null 2>&1 ; then
         echo "Done"
     else
@@ -122,27 +121,7 @@ install_R() {
 }
 
 install_java() {
-    openjdk-8-jre openjdk-8-jdk openjdk-8-doc openjdk-8-source
-}
-
-config_java9_list() {
-    # Instructions:
-    # http://www.webupd8.org/2015/02/install-oracle-java-9-in-ubuntu-linux.html
-
-    echo -n "Configuring Java 9 repository ...   "
-    if echo "deb     http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/java.list > /dev/null 2>&1 \
-            && echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/java.list > /dev/null 2>&1 \
-            && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 > /dev/null 2>&1 ; then
-        echo "Done"
-    else
-        echo "Fail"
-        EXITCODE=$((EXITCODE + 1))
-    fi
-}
-
-install_java9() {
-    echo oracle-java9-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
-    apt_install oracle-java9-installer
+    apt_install openjdk-11-jre openjdk-11-jdk openjdk-11-doc openjdk-11-source
 }
 
 config_nodejs_list() {
@@ -150,7 +129,7 @@ config_nodejs_list() {
     # https://nodejs.org/en/download/package-manager/
 
     echo -n "Configuring NodeJS repository ...   "
-    if \curl -sL https://deb.nodesource.com/setup_8.x | bash - > /dev/null 2>&1 ; then
+    if \curl -sL https://deb.nodesource.com/setup_13.x | bash - > /dev/null 2>&1 ; then
         echo "Done"
     else
         echo "Fail"
@@ -173,7 +152,7 @@ config_vbox_list() {
     # https://wiki.debian.org/VirtualBox
 
     echo -n "Configuring VirtualBox repository ...   "
-    if echo "deb http://download.virtualbox.org/virtualbox/debian stretch contrib" | tee /etc/apt/sources.list.d/vbox.list > /dev/null 2>&1 \
+    if echo "deb https://download.virtualbox.org/virtualbox/debian buster contrib" | tee /etc/apt/sources.list.d/vbox.list > /dev/null 2>&1 \
             && wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add - > /dev/null 2>&1 ; then
         echo "Done"
     else
@@ -183,7 +162,7 @@ config_vbox_list() {
 }
 
 install_vbox() {
-    apt_install virtualbox-5.2 dkms
+    apt_install virtualbox-6.1 dkms
 }
 
 add_vboxuser() {
@@ -201,7 +180,6 @@ all=no
 python=no
 rstat=no
 java=no
-java9=no
 nodejs=no
 gis=no
 vbox=no
@@ -226,9 +204,6 @@ do
             ;;
         -java | --java )
             java=yes
-            ;;
-        -java9 | --java9 )
-            java9=yes
             ;;
         -node | --node | -nodejs | --nodejs )
             nodejs=yes
@@ -266,7 +241,6 @@ prepare
 
 # configure 3rd-party repositories
 [ "$all" = "yes" -o  "$rstat" = "yes" ]  && config_R_list
-[ "$all" = "yes" -o  "$java9" = "yes" ]  && config_java9_list
 [ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
 [ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
 
@@ -277,7 +251,6 @@ apt_update
 [ "$all" = "yes" -o "$python" = "yes" ] && install_python
 [ "$all" = "yes" -o  "$rstat" = "yes" ] && install_R
 [ "$all" = "yes" -o   "$java" = "yes" ] && install_java
-[ "$all" = "yes" -o  "$java9" = "yes" ] && install_java9
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 [ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
 [ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
