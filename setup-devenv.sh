@@ -97,7 +97,7 @@ prepare() {
 }
 
 install_python() {
-    apt_install python3 python3-dev python3-pip
+    apt_install python3 python3-dev python3-pip python3-tk
     pip_install ipython virtualenv
 }
 
@@ -139,6 +139,7 @@ config_nodejs_list() {
 
 install_nodejs() {
     apt_install nodejs
+    npm_install nodemon
 }
 
 install_gis() {
