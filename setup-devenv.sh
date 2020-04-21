@@ -121,7 +121,7 @@ install_R() {
 }
 
 install_java() {
-    apt_install openjdk-11-jre openjdk-11-jdk openjdk-11-doc openjdk-11-source
+    apt_install openjdk-11-jre openjdk-11-jdk openjdk-11-doc openjdk-11-source jaxws
 }
 
 config_nodejs_list() {
