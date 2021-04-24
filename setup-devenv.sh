@@ -23,6 +23,8 @@ showhelp() {
     echo "      --java              setup Java environment"
     echo "      --node              setup NodeJS environment"
     echo "      --nodejs"
+    echo "      --pgsql             setup PostgreSQL environment"
+    echo "      --postgres"
     echo "      --py                setup python environment"
     echo "      --python"
     echo "      --R                 setup R environment"
@@ -147,6 +149,10 @@ install_gis() {
     npm_install topojson mapshaper
 }
 
+install_pgsql() {
+    apt_install postgresql postgresql-client postgresql-doc pgadmin3
+}
+
 config_vbox_list() {
     # Instructions:
     # https://www.virtualbox.org/wiki/Linux_Downloads
@@ -183,6 +189,7 @@ rstat=no
 java=no
 nodejs=no
 gis=no
+pgsql=no
 vbox=no
 
 EXITCODE=0
@@ -212,6 +219,9 @@ do
         -gis | --gis )
             gis=yes
             nodejs=yes # require npm
+            ;;
+        -pgsql | --pgsql | -postgres | --postgres )
+            pgsql=yes
             ;;
         -vbox | --vbox | -virtualbox | --virtualbox )
             vbox=yes
@@ -254,6 +264,7 @@ apt_update
 [ "$all" = "yes" -o   "$java" = "yes" ] && install_java
 [ "$all" = "yes" -o "$nodejs" = "yes" ] && install_nodejs
 [ "$all" = "yes" -o    "$gis" = "yes" ] && install_gis
+[ "$all" = "yes" -o  "$pgsql" = "yes" ] && install_pgsql
 [ "$all" = "yes" -o   "$vbox" = "yes" ] && install_vbox
 
 # additional configuration
