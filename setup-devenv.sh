@@ -54,8 +54,8 @@ check_root() {
 
 
 apt_install() {
-    echo -n "Running 'apt-get install -y $@' ...   "
-    if apt-get install -y "$@" > /dev/null 2>&1 ; then
+    echo -n "Running 'apt install -y $@' ...   "
+    if apt install -y "$@" > /dev/null 2>&1 ; then
         echo "Done"
     else
         echo "Fail"
@@ -64,8 +64,8 @@ apt_install() {
 }
 
 apt_update() {
-    echo -n "Running 'apt-get update' ...   "
-    if apt-get update > /dev/null 2>&1 ; then
+    echo -n "Running 'apt update' ...   "
+    if apt update > /dev/null 2>&1 ; then
         echo "Done"
     else
         echo "Fail"
@@ -123,7 +123,7 @@ install_R() {
 }
 
 install_java() {
-    apt_install openjdk-11-jre openjdk-11-jdk openjdk-11-doc openjdk-11-source jaxws
+    apt_install openjdk-17-jre openjdk-17-jdk openjdk-17-doc openjdk-17-source jaxws
 }
 
 config_nodejs_list() {
@@ -131,7 +131,7 @@ config_nodejs_list() {
     # https://nodejs.org/en/download/package-manager/
 
     echo -n "Configuring NodeJS repository ...   "
-    if \curl -sL https://deb.nodesource.com/setup_13.x | bash - > /dev/null 2>&1 ; then
+    if curl -fsSL https://deb.nodesource.com/setup_current.x | bash - > /dev/null 2>&1 ; then
         echo "Done"
     else
         echo "Fail"
