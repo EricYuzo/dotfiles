@@ -149,8 +149,22 @@ install_gis() {
     npm_install topojson mapshaper
 }
 
+config_pgadmin_list() {
+    # Instructions:
+    # https://www.pgadmin.org/download/pgadmin-4-apt/
+
+    echo -n "Configuring pgAdmin repository ...   "
+    if echo "deb [signed-by=/usr/share/keyrings/pgadmin.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" | tee /etc/apt/sources.list.d/pgadmin.list > /dev/null 2>&1 \
+            && curl -s https://www.pgadmin.org/static/packages_pgadmin_org.pub | gpg --dearmor | tee /usr/share/keyrings/pgadmin.gpg > /dev/null 2>&1 ; then
+        echo "Done"
+    else
+        echo "Fail"
+        EXITCODE=$((EXITCODE + 1))
+    fi
+}
+
 install_pgsql() {
-    apt_install postgresql postgresql-client postgresql-doc pgadmin3
+    apt_install postgresql postgresql-client postgresql-doc pgadmin4
 }
 
 config_vbox_list() {
@@ -253,6 +267,7 @@ prepare
 # configure 3rd-party repositories
 [ "$all" = "yes" -o  "$rstat" = "yes" ]  && config_R_list
 [ "$all" = "yes" -o "$nodejs" = "yes" ]  && config_nodejs_list
+[ "$all" = "yes" -o  "$pgsql" = "yes" ]  && config_pgadmin_list
 [ "$all" = "yes" -o   "$vbox" = "yes" ]  && config_vbox_list
 
 # update apt list
